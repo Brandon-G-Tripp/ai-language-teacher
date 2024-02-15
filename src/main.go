@@ -1,8 +1,11 @@
 package main
 
 import "github.com/gin-gonic/gin"
+import "github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
 func main() {
+    database.AutoMigrate()
+
     r := gin.Default()
 
     r.GET("/", func(c *gin.Context) {
