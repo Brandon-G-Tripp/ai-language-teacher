@@ -4,8 +4,5 @@ build:
 test:
 	go test -v ./...
 
-lint:
-	golangci-lint run
-
 run: 
 	go run main.go
