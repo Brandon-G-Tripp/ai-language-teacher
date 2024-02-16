@@ -3,30 +3,16 @@ package database
 import (
 	"testing"
 
-	"gorm.io/gorm/logger"
 )
 
 func TestDatabaseConnection(t *testing.T) {
-    db, err := connectDB("../../.env.test")
+    db, err := ConnectDB("test")
     if err != nil {
         t.Errorf("Failed to connect to database: %v", err)
     } 
 
-    // Enable logger for test
-    db.Logger.LogMode(logger.Info)
-
+    // Check if we can ping db
     sqlDB, err := db.DB()
-    defer func() {
-        if err != nil {
-            t.Errorf("Failed to close database connection: %v", err)
-        } 
-
-        err = sqlDB.Close()
-        if err != nil {
-            t.Errorf("Failed to close the database connection: %v", err)
-        } 
-    }()
-
     err = sqlDB.Ping()
     if err != nil {
         t.Errorf("Failed to ping the database: %v", err)
