@@ -1,10 +1,18 @@
 package main
 
-import "github.com/gin-gonic/gin"
-import "github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
+import (
+	"log"
 
+	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
+)
 
 func main() {
+    err := godotenv.Load(".env")
+    if err != nil {
+        log.Fatalf("Failed to load environment variables: %v", err)
+    } 
     database.Migrate("dev")
 
     r := gin.Default()
