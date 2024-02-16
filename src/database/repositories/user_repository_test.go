@@ -9,7 +9,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
     // Arrange 
-    db, err := database.ConnectDB("../../.env.test")
+    db, err := database.ConnectDB("test")
     if err != nil {
         t.Fatalf("Error connecting to the database: %v", err)
     } 
@@ -42,12 +42,12 @@ func TestCreateUser(t *testing.T) {
 
     // Assert
     if err != nil {
-        t.Fatal("Error creating the user: %v", err)
+        t.Fatalf("Error creating the user: %v", err)
     } 
 
     // verify user was created
-    var createdUser models.User
-    err = repo.GetByEmail(user.Email, &createdUser)
+    var createdUser *models.User
+    createdUser, err = repo.GetByEmail(user.Email)
     if err != nil {
         t.Fatalf("Error getting user by email: %v", err)
     } 
