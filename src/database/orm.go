@@ -9,9 +9,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func connectDB() (*gorm.DB, error) {
+func connectDB(envPath string) (*gorm.DB, error) {
     // Load .env
-    err := godotenv.Load("../../.env")
+    err := godotenv.Load(envPath)
     if err != nil {
         return nil, fmt.Errorf("Failed to load environment variables: %w", err)
     } 
