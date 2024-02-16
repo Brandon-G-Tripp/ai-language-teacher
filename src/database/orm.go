@@ -9,9 +9,20 @@ import (
 	"gorm.io/gorm"
 )
 
+const TEST_DB_PATH = "../.env.test"
+const DEV_DB_PATH = "../../.env"
+
 func ConnectDB(envPath string) (*gorm.DB, error) {
     // Load .env
-    err := godotenv.Load(envPath)
+    var path string
+    if envPath == "test" {
+        path = TEST_DB_PATH
+    } else {
+        path = DEV_DB_PATH
+    } 
+
+
+    err := godotenv.Load(path)
     if err != nil {
         return nil, fmt.Errorf("Failed to load environment variables: %w", err)
     } 
