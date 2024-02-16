@@ -3,8 +3,9 @@ package main
 import "github.com/gin-gonic/gin"
 import "github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
+
 func main() {
-    database.AutoMigrate()
+    database.Migrate("dev")
 
     r := gin.Default()
 
