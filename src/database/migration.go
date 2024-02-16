@@ -7,7 +7,7 @@ import (
 )
 
 func AutoMigrate() error {
-    db, err := connectDB("../../.env")
+    db, err := ConnectDB("../../.env")
     if err != nil {
         return fmt.Errorf("Failed to connect to database: %w", err)
     } 
