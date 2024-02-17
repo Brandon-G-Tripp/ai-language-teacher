@@ -1,32 +1,59 @@
 package repositories
 
 import (
+	"os"
 	"testing"
 
+	"log"
+
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+
+	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
 ) 
 
-func TestCreateUser(t *testing.T) {
-    // Arrange 
-    db, err := database.ConnectDB("test")
+var db *gorm.DB
+
+func init() {
+    env.LoadEnv()
+
+    var err error
+    db, err = database.ConnectDB("test")
     if err != nil {
-        t.Fatalf("Error connecting to the database: %v", err)
+        panic("Failed to connect to database: %v" + err.Error())
     } 
 
-    // deferred cleanup
+    // Enable logger for test
+    db.Logger.LogMode(logger.Info)
+
+    // Run Migrations 
+    err = database.Migrate("test")
+    if err != nil {
+        log.Fatalf("Error in test database migration: %v", err)
+    } 
+} 
+
+func TestMain(m *testing.M) {
+    // run tests
+    exitCode := m.Run()
+
+    // Close connection 
     sqlDB, err := db.DB()
-    defer func() {
-        if err != nil {
-            t.Errorf("Failed to close database connection: %v", err)
-        } 
+    if err != nil {
+        panic("Failed to get SQL DB connection: " + err.Error())
+    } 
+    defer sqlDB.Close()
 
-        err = sqlDB.Close()
-        if err != nil {
-            t.Errorf("Failed to close the database connection: %v", err)
-        } 
-    }()
+    os.Exit(exitCode)
 
+} 
+
+func TestCreateUser(t *testing.T) {
+    // Arrange 
+
+    // deferred cleanup
     // init User Repo
     repo := NewUserRepository(db)
 
@@ -38,7 +65,7 @@ func TestCreateUser(t *testing.T) {
 
     // Act
 
-    err = repo.Create(&user)
+    err := repo.Create(&user)
 
     // Assert
     if err != nil {
