@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/joho/godotenv"
+    "github.com/Brandon-G-Tripp/ai-language-teacher/internal/projectpath"
 )
 
 var (
@@ -25,7 +26,7 @@ var (
 
 func LoadEnv() {
     // Load .env file
-    err := godotenv.Load()
+    err := godotenv.Load(projectpath.Root + "/.env")
     if err != nil {
         log.Fatalf("Failed to load environment variables in env.go: %v", err)
     }
