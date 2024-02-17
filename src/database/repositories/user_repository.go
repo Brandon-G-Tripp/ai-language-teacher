@@ -26,4 +26,25 @@ func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
     return &user, err
 } 
 
+func (r *UserRepository) GetById(id uint) (*models.User, error) {
+    var user models.User
+    err := r.db.First(&user, id).Error
+    return &user, err
+} 
+
+func (r *UserRepository) Update(user *models.User) error {
+    err := r.db.Save(user).Error
+    return err
+}
+
+func (r *UserRepository) Delete(user *models.User) error {
+    err := r.db.Delete(user).Error
+    return err
+} 
+
+func (r *UserRepository) GetAll() ([]*models.User, error) {
+    var users []*models.User
+    err := r.db.Find(&users).Error
+    return users, err
+} 
 
