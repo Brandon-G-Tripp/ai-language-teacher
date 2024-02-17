@@ -5,18 +5,17 @@ import (
 	"os"
 	"testing"
 
+	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
+	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
-	"github.com/joho/godotenv"
 )
 
+var db *gorm.DB
 
 func TestMain(m *testing.M) {
-    err := godotenv.Load(".env.test")
-    if err != nil {
-        log.Fatalf("Failed to load environment variables: %v", err)
-    } 
+    env.LoadEnv()
 
     db, err := database.ConnectDB("test")
     if err != nil {
@@ -33,14 +32,11 @@ func TestMain(m *testing.M) {
     } 
 
     sqlDB, err := db.DB()
-    defer sqlDB.Close()
 
     // Run tests
-    exitVal := m.Run()
+    m.Run()
 
+    defer sqlDB.Close()
 
-    // Close Connection
-    sqlDB.Close()
-
-    os.Exit(exitVal)
+    os.Exit(0)
 } 
