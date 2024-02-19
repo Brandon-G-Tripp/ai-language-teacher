@@ -22,6 +22,9 @@ var (
     PG_USER_TEST     string
     PG_PASSWORD_TEST string
     PG_DB_TEST       string
+
+    // JWT VARS
+    JWT_SECRET string
 )
 
 func LoadEnv() {
@@ -43,4 +46,6 @@ func LoadEnv() {
     PG_USER_TEST = os.Getenv("PG_USER")
     PG_PASSWORD_TEST = os.Getenv("PG_PASSWORD")
     PG_DB_TEST = os.Getenv("PG_DB")
+
+    JWT_SECRET = os.Getenv("JWT_SECRET")
 }
