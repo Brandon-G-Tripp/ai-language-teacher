@@ -9,6 +9,8 @@ import (
     "github.com/Brandon-G-Tripp/ai-language-teacher/env"
 )
 
+var DB *gorm.DB
+
 func ConnectDB(envStr string) (*gorm.DB, error) {
 
     var connectionString string
@@ -34,10 +36,10 @@ func ConnectDB(envStr string) (*gorm.DB, error) {
     }
 
     fmt.Print(connectionString)
-    db, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
+    DB, err := gorm.Open(postgres.Open(connectionString), &gorm.Config{})
 
     if err != nil {
         panic("failed to connect to database")
     } 
-    return db, nil
+    return DB, nil
 } 
