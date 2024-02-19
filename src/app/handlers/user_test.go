@@ -23,7 +23,10 @@ type SignUpTestCase struct {
     StatusCode int
     Response interface{} `json:"response"`
 } 
- var db *gorm.DB
+
+var db *gorm.DB
+
+
 
 func init() {
     env.LoadEnv()
@@ -33,6 +36,7 @@ func init() {
     if err != nil {
         panic("Failed to connect to database: %v" + err.Error())
     } 
+    database.DB = db
 
     // Enable logger for test
     db.Logger.LogMode(logger.Info)
