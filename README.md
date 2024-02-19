@@ -32,6 +32,17 @@ This repository is for an AI-powered language learning chatbot and tool. The goa
 4. Start the API with `go run .`
 5. Connect to http://localhost:8080
 
+
+## Testing 
+
+```bash
+go test -cover ./... # test coverage for recursively
+
+go test -coverprofile=c.out # create a test coverage file
+go tool cover -func=c.out # print nice coverage report to console
+```
+
+
 Contributions welcome!
 
 ## License
