@@ -7,6 +7,7 @@ import (
 
 	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
+    "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/handlers"
 )
 
 func main() {
@@ -24,6 +25,9 @@ func main() {
     defer sqlDB.Close()
 
     r := gin.Default()
+
+    // Define handlers
+    r.POST("api/v1/users", handlers.SignUp)
 
     r.GET("/", func(c *gin.Context) {
         c.JSON(200, gin.H{"message": "Hello World"})
