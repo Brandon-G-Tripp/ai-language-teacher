@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"hash"
 	"log"
 	"net/http"
 
@@ -65,7 +64,7 @@ func SignUp(c *gin.Context) {
     } 
 
     // Generate token 
-    token, err := jwt.GenerateToken(user.ID)
+    token, err := GenerateToken(&user)
     if err != nil {
         c.JSON(500, err)
         return 
