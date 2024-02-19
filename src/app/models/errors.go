@@ -1,8 +1,10 @@
 package models
 
-import "github.com/gin-gonic/gin"
-
 type ApiError struct {
-    Message string
-    Error gin.Error
+    Message string `json:"message"`
+    Code int `json:"code"`
+} 
+
+type ErrorResponse struct {
+    Error ApiError `json:"error"`
 } 
