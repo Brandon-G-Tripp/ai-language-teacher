@@ -9,6 +9,7 @@ import (
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
 	handler_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/models"
+	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
 	db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
 	user_repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
 )
@@ -44,11 +45,13 @@ func SignUp(c *gin.Context) {
     if err != nil {
     }
 
+    authService := auth.NewAuthService()
+
     if user.ID == 0 {
         // user not found 
         // Create user 
         // Hash Password 
-        hashed, err := HashPassword(req.Password)
+        hashed, err := authService.HashPassword(req.Password)
         if err != nil {
             c.JSON(500, err)
             return 
@@ -65,7 +68,7 @@ func SignUp(c *gin.Context) {
         } 
 
         // Generate token 
-        token, err := GenerateToken(&user)
+        token, err := authService.GenerateJWT(&user)
         if err != nil {
             c.JSON(500, err)
             return 
