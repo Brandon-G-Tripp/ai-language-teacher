@@ -70,36 +70,36 @@ func TestLoginAPI(t *testing.T) {
   }
 }
 
-// func TestLoginAPIInvalidCreds(t *testing.T) {
+func TestLoginAPIInvalidCreds(t *testing.T) {
 
-//   // Wrong password
-//   email := "test@example.com"
-//   pwd := "wrongpass"
+  // Wrong password
+  email := "test@example.com"
+  pwd := "wrongpass"
 
-//   // Execute handler
-//   userRepo := user_repo.NewUserRepository(database.DB)
-//     userToCreate := db_models.User{
-//         Name: "John Doe2",
-//         Email: email,
-//         Password: "password123",
-//     } 
+  // Execute handler
+  userRepo := user_repo.NewUserRepository(database.DB)
+    userToCreate := db_models.User{
+        Name: "John Doe2",
+        Email: email,
+        Password: "password123",
+    } 
 
-//   err := userRepo.Create(&userToCreate)
+  err := userRepo.Create(&userToCreate)
 
-//     // Assert
-//   if err != nil {
-//      t.Fatalf("Error creating the user: %v", err)
-//   } 
-//   handler := NewLoginHandler(userRepo)  
-//   user, token, err := handler.Login(email, pwd)
+    // Assert
+  if err != nil {
+     t.Fatalf("Error creating the user: %v", err)
+  } 
+  handler := NewLoginHandler(userRepo)  
+  user, token, err := handler.Login(email, pwd)
 
-//   // Assert
-//   if user != nil || token != "" {
-//     t.Error("expected empty response") 
-//   }
+  // Assert
+  if user != nil || token != "" {
+    t.Error("expected empty response") 
+  }
 
-//   if err != ErrInvalidCredentials {
-//     t.Error("expected invalid credentials error")
-//   }
+  if err != ErrInvalidCredentials {
+    t.Error("expected invalid credentials error")
+  }
 
-// }
+}
