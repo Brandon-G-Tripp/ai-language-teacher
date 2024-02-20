@@ -79,7 +79,7 @@ func TestSignUpHandler(t *testing.T) {
     // Run through test cases
     for _, tc := range cases {
         // Arrange
-        ctx := GetTestGinContext()
+        ctx := testutil.GetTestGinContext()
 
         // Create http request
         data, _ := json.Marshal(tc.Input)
