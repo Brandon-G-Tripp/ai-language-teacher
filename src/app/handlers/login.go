@@ -1,11 +1,11 @@
 package handlers
 
 import (
-    "errors"
+	"errors"
 
-    auth "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
-    repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
-    db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
+	auth "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
+	db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
+	user_repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
 ) 
 
 var (
@@ -14,11 +14,11 @@ var (
 )
 
 type LoginHandler struct {
-  UserRepo repo.UserRepository
+  UserRepo *user_repo.UserRepository
 }
 
-func NewLoginHandler(repo repo.UserRepository) *LoginHandler {
-  return &LoginHandler{UserRepo: repo}
+func NewLoginHandler(repo *user_repo.UserRepository) *LoginHandler {
+    return &LoginHandler{UserRepo: repo}
 }
 
 func (h *LoginHandler) Login(email, password string) (*db_models.User, string, error) {
