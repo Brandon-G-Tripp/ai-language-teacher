@@ -1,6 +1,9 @@
 package auth
 
-import db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
+import (
+	db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
+	"github.com/golang-jwt/jwt/v5"
+)
 
 type AuthService struct {}
 
@@ -27,4 +30,12 @@ func (s *AuthService) GenerateJWT(user *db_models.User) (string, error) {
     } 
 
     return token, nil
+} 
+
+func (s *AuthService) ValidateToken(token string) error {
+    return validateToken(token)
+} 
+
+func (s *AuthService) VerifyKeyFunc(t *jwt.Token) (interface{}, error) {
+    return verifyKeyFunc(t)
 } 
