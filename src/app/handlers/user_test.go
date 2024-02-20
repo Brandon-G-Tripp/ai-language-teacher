@@ -104,11 +104,11 @@ func TestSignUpHandler(t *testing.T) {
 
     // Setup 
 
-    ctx := GetTestGinContext()
 
     // Run through test cases
     for _, tc := range cases {
         // Arrange
+        ctx := GetTestGinContext()
 
         // Create http request
         data, _ := json.Marshal(tc.Input)
@@ -122,7 +122,11 @@ func TestSignUpHandler(t *testing.T) {
         
         // Act
         SignUp(ctx)
-        
+        if ctx.Errors != nil {
+            ctx.JSON(400, ctx.Errors)
+            ctx.Writer.WriteHeader(400)
+        } 
+
         // Assert
         // Validate status code
         if got, want := ctx.Writer.Status(), tc.StatusCode; got != want {
