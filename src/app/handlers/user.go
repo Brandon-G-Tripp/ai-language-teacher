@@ -18,7 +18,7 @@ func SignUp(c *gin.Context) {
     var req handler_models.SignUpRequest
     if err := c.ShouldBindJSON(&req); err != nil {
         c.JSON(400, err)
-        return 
+        return
     }
 
     log.Printf("Request: %+v", req)
@@ -27,10 +27,10 @@ func SignUp(c *gin.Context) {
     if !IsEmailValid(req.Email) {
         err := handler_models.ApiError{
             Message: "Invalid email address",
-            Code: http.StatusBadRequest,
+            Code: 400,
         }
 
-        c.JSON(err.Code, err)
+        c.AbortWithError(err.Code, err)
 
         return 
     } 
@@ -38,40 +38,46 @@ func SignUp(c *gin.Context) {
     // cReate user repo 
     repo := user_repo.NewUserRepository(database.DB)
 
+
     // Check for existing email
-    existing_user, _ := repo.GetByEmail(req.Email)
-    if existing_user != nil {
-        c.JSON(400, "Email already exists")
-        return 
-    } 
-
-    // Hash Password 
-    hashed, err := HashPassword(req.Password)
+    user, err := repo.GetByEmail(req.Email)
     if err != nil {
-        c.JSON(500, err)
-        return 
-    } 
-
-    // Create user 
-    user := db_models.User{
-        Name: req.Name, 
-        Email: req.Email,
-        Password: hashed,
     }
-    if err := repo.Create(&user); err != nil {
-        c.JSON(500, err)
+
+    if user.ID == 0 {
+        // user not found 
+        // Create user 
+        // Hash Password 
+        hashed, err := HashPassword(req.Password)
+        if err != nil {
+            c.JSON(500, err)
+            return 
+        } 
+
+        user := db_models.User{
+            Name: req.Name, 
+            Email: req.Email,
+            Password: hashed,
+        }
+        if err := repo.Create(&user); err != nil {
+            c.JSON(500, err)
+            return 
+        } 
+
+        // Generate token 
+        token, err := GenerateToken(&user)
+        if err != nil {
+            c.JSON(500, err)
+            return 
+        } 
+
+        c.JSON(http.StatusOK, handler_models.SignUpResponse{
+            User: user, 
+            Token: token,
+        })
+        return 
+    }  else {
+        c.JSON(http.StatusBadRequest, "Email already exists")
         return 
     } 
-
-    // Generate token 
-    token, err := GenerateToken(&user)
-    if err != nil {
-        c.JSON(500, err)
-        return 
-    } 
-
-    c.JSON(http.StatusOK, handler_models.SignUpResponse{
-        User: user, 
-        Token: token,
-    })
 } 
