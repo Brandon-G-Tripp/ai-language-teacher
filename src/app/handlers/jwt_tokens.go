@@ -50,3 +50,7 @@ func ValidateToken(tokenString string) error {
     return nil
 
 } 
+
+func VerifyKeyFunc(t *jwt.Token) (interface{}, error) {
+    return []byte(env.JWT_SECRET), nil
+} 
