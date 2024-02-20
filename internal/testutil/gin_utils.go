@@ -1,4 +1,4 @@
-package handlers
+package testutil
 
 import (
 	"net/http"
