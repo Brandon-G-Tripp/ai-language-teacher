@@ -1,9 +1,14 @@
 package repositories
 
 import (
+	"errors"
+	"log"
+
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
 	"gorm.io/gorm"
 )
+
+var ErrUserNotFound = errors.New("user not found")
 
 type UserRepository struct {
     db *gorm.DB
@@ -23,7 +28,15 @@ func (r *UserRepository) Create(user *models.User) error {
 func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
     var user models.User
     err := r.db.Where("email = ?", email).First(&user).Error
-    return &user, err
+    log.Printf("User: %+v", user)
+    log.Printf("Error: %+v", err)
+
+    if err == gorm.ErrRecordNotFound {
+        log.Print("err is gorm not found")
+        return &models.User{}, ErrUserNotFound
+    } 
+
+    return  &user, err
 } 
 
 func (r *UserRepository) GetById(id uint) (*models.User, error) {
