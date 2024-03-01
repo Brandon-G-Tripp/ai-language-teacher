@@ -5,14 +5,12 @@ import (
 	"os"
 	"testing"
 
-	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 
 	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 )
 
-var db *gorm.DB
 
 func TestMain(m *testing.M) {
     env.LoadEnv()
