@@ -15,10 +15,11 @@ var (
 
 type LoginHandler struct {
   UserRepo *user_repo.UserRepository
+  AuthService *auth.AuthService
 }
 
-func NewLoginHandler(repo *user_repo.UserRepository) *LoginHandler {
-    return &LoginHandler{UserRepo: repo}
+func NewLoginHandler(repo *user_repo.UserRepository, authService *auth.AuthService) *LoginHandler {
+    return &LoginHandler{UserRepo: repo, AuthService: authService}
 }
 
 func (h *LoginHandler) Login(email, password string) (*db_models.User, string, error) {
@@ -34,15 +35,14 @@ func (h *LoginHandler) Login(email, password string) (*db_models.User, string, e
     return nil, "", ErrUserNotFound
   }
 
-  authService := auth.NewAuthService()
 
   // Check password
-  if !authService.ValidatePassword(user.Password, password) {
+  if !h.AuthService.ValidatePassword(user.Password, password) {
     return nil, "", ErrInvalidCredentials
   }
 
   // Generate JWT token
-  token, err := authService.GenerateJWT(user)
+  token, err := h.AuthService.GenerateJWT(user)
   if err != nil {
     return nil, "", err
   }
