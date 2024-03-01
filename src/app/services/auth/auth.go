@@ -33,6 +33,10 @@ func (s *AuthService) GenerateJWT(user *db_models.User) (string, error) {
 } 
 
 func (s *AuthService) ValidateToken(token string) error {
+    if invalidator.IsTokenInvalid(token) {
+        return ErrInvalidToken
+    }
+
     return validateToken(token)
 } 
 
