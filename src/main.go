@@ -8,6 +8,7 @@ import (
 
 	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/handlers"
+	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/middleware"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
