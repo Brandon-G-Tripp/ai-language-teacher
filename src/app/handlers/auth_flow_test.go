@@ -5,30 +5,21 @@ import (
 
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/models"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
-	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
-	user_repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
 )
 
 func TestUserAuthFlowIntegration(t *testing.T) {
     if testing.Short() {
         t.Skip("skipping integration test")
     } 
-
-    // Setup 
-    userRepo := user_repo.NewUserRepository(database.DB)
-    authService := auth.NewAuthService()
-
     // Test data 
     email := "testauthflow@example.com"
     pwd := "password123"
-    hashedPassword, err := authService.HashPassword(pwd)
 
     // 1. Call Signup handler 
-    signUpHandler := NewSignUpHandler(userRepo, authService)
     user, _, err := signUpHandler.SignUp(models.SignUpRequest{
         Name: "Johnny Auth Test",
         Email: email,
-        Password: hashedPassword,
+        Password: pwd,
     })
 
     if err != nil {
@@ -36,7 +27,6 @@ func TestUserAuthFlowIntegration(t *testing.T) {
     } 
 
     // 2. Call login handler with user creds
-    loginHandler := NewLoginHandler(userRepo)
     loggedInUser, token_login, err := loginHandler.Login(email, pwd)
     if err != nil {
         t.Fatalf("Login failed: %v", err)
@@ -53,7 +43,6 @@ func TestUserAuthFlowIntegration(t *testing.T) {
     } 
 
     // 3. Call logut handler with token 
-    logoutHandler := NewLogoutHandler(userRepo, authService)
     err = logoutHandler.Logout(token_login)
     if err != nil {
         t.Errorf("Logout failed: %v", err)
