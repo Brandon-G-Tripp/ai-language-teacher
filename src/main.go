@@ -52,7 +52,7 @@ func main() {
         } 
 
         c.JSON(http.StatusOK, handler_models.SignUpResponse{
-            User: *user,
+            User: user,
             Token: token,
         })
     })
@@ -76,9 +76,31 @@ func main() {
         } 
 
         c.JSON(http.StatusOK, handler_models.LoginResponse{
-            User: *user, 
+            User: user, 
             Token: token,
         })
+    })
+
+    r.Use(middleware.AuthMiddleware())
+    r.POST("api/v1/logout", func(c *gin.Context) {
+        var req handler_models.LogoutRequest
+        if err := c.ShouldBindJSON(&req); err != nil {
+            c.JSON(400, err)
+            return 
+        } 
+
+        err := logoutHandler.Logout(req.Token)
+        if err != nil {
+            apiErr, ok := err.(handler_models.ApiError)
+            if !ok {
+                c.JSON(http.StatusInternalServerError, "Internal server error")
+            } else {
+                c.JSON(apiErr.Code, apiErr.Message)
+            } 
+            return 
+        } 
+        
+        c.JSON(http.StatusOK, "Successfully logged out")
     })
 
     r.GET("/", func(c *gin.Context) {
