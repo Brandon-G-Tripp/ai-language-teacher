@@ -37,7 +37,7 @@ func (h *LoginHandler) Login(email, password string) (*db_models.User, string, e
   authService := auth.NewAuthService()
 
   // Check password
-  if authService.ValidatePassword(user.Password, password) {
+  if !authService.ValidatePassword(user.Password, password) {
     return nil, "", ErrInvalidCredentials
   }
 
