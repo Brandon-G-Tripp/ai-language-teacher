@@ -14,14 +14,17 @@ func TestLogoutHandlerWithValidToken(t *testing.T) {
     authService := auth.NewAuthService()
 
     userRepo :=  user_repo.NewUserRepository(database.DB)
-    hashedPwd := authService.HashPassword("logouttest")
+    hashedPwd, err := authService.HashPassword("logouttest")
+    if err != nil {
+        t.Fatal("Error returned from hashing password")
+    }
     user := db_models.User{
         Name: "John Doe Logout",
         Email: "testlogout@mail.com",
         Password: hashedPwd,
     } 
 
-    err := userRepo.Create(&user)
+    err = userRepo.Create(&user)
     if err != nil {
         t.Fatalf("Error creating user: %v", err)
     } 

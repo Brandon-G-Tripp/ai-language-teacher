@@ -10,11 +10,16 @@ type LogoutHandler struct {
     AuthService *auth.AuthService
 }
 
-func NewLogoutHandler(repo *user_repo.UserRepository, authService * auth.AuthService) *LogoutHandler {
+func NewLogoutHandler(repo *user_repo.UserRepository, authService *auth.AuthService) *LogoutHandler {
     return &LogoutHandler{UserRepo: repo, AuthService: authService}
 } 
 
-func (h *LogoutHandler) Logoutr(token string) error {
+func (h *LogoutHandler) Logout(token string) error {
+    err := h.AuthService.ValidateToken(token)
+    if err != nil {
+        return auth.ErrInvalidToken
+    }
+
     h.AuthService.InvalidateToken(token)
 
     return nil
