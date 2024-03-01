@@ -12,9 +12,6 @@ import (
 )
 
 func TestLoginAPI(t *testing.T) {
-
-  authService := auth.NewAuthService()
-
   // Setup test data
   email := "testapi@example.com"
   pwd := "password123"
@@ -24,7 +21,6 @@ func TestLoginAPI(t *testing.T) {
     if err != nil {
         t.Fatal("Error returned from hashing password")
     }
-    userRepo := user_repo.NewUserRepository(database.DB)
     userToCreate := db_models.User{
         Name: "John Doe",
         Email: email,
@@ -39,7 +35,7 @@ func TestLoginAPI(t *testing.T) {
      t.Fatalf("Error creating the user: %v", err)
   } 
 
-  handler := NewLoginHandler(userRepo)
+  handler := NewLoginHandler(userRepo, authService)
 
   // Valid credentials
   user, token, err := handler.Login(email, pwd)
@@ -75,36 +71,43 @@ func TestLoginAPI(t *testing.T) {
   }
 }
 
-// func TestLoginAPIInvalidCreds(t *testing.T) {
+func TestLoginAPIInvalidCreds(t *testing.T) {
 
-//   // Wrong password
-//   email := "test@example.com"
-//   pwd := "wrongpass"
+  // Wrong password
+  email := "test@example.com"
+  pwd := "wrongpass"
 
-//   // Execute handler
-//   userRepo := user_repo.NewUserRepository(database.DB)
-//     userToCreate := db_models.User{
-//         Name: "John Doe2",
-//         Email: email,
-//         Password: "password123",
-//     } 
+  // Execute handler
+  authService := auth.NewAuthService()
 
-//   err := userRepo.Create(&userToCreate)
+  // Initialise handler
+    hashPassword, err := authService.HashPassword("password123")
+    if err != nil {
+        t.Fatal("Error returned from hashing password")
+    }
+  userRepo := user_repo.NewUserRepository(database.DB)
+    userToCreate := db_models.User{
+        Name: "John Doe2",
+        Email: email,
+        Password: hashPassword,
+    } 
 
-//     // Assert
-//   if err != nil {
-//      t.Fatalf("Error creating the user: %v", err)
-//   } 
-//   handler := NewLoginHandler(userRepo)  
-//   _, _, err = handler.Login(email, pwd)
+  err = userRepo.Create(&userToCreate)
 
-//   // Assert
-//   if err == nil {
-//     t.Error("expected error response") 
-//   }
+    // Assert
+  if err != nil {
+     t.Fatalf("Error creating the user: %v", err)
+  } 
+  handler := NewLoginHandler(userRepo, authService)  
+  _, _, err = handler.Login(email, pwd)
 
-//   if err != ErrInvalidCredentials {
-//     t.Error("expected invalid credentials error but did not receive")
-//   }
+  // Assert
+  if err == nil {
+    t.Error("expected error response") 
+  }
 
-// }
+  if err != ErrInvalidCredentials {
+    t.Error("expected invalid credentials error but did not receive")
+  }
+
+}
