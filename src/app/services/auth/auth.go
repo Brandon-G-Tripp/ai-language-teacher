@@ -5,10 +5,14 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-type AuthService struct {}
+type AuthService struct {
+    tokenInvalidator *tokenInvalidator
+}
 
 func NewAuthService() *AuthService {
-    return &AuthService{}
+    return &AuthService{
+        tokenInvalidator: &invalidator,
+    }
 } 
 
 func (s *AuthService) HashPassword(password string) (string, error) {
@@ -43,3 +47,7 @@ func (s *AuthService) ValidateToken(token string) error {
 func (s *AuthService) VerifyKeyFunc(t *jwt.Token) (interface{}, error) {
     return verifyKeyFunc(t)
 } 
+
+func (s *AuthService) InvalidateToken(token string) {
+    s.tokenInvalidator.InvalidateToken(token)
+}
