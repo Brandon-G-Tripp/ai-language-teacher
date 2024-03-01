@@ -12,8 +12,16 @@ import (
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
 	handler_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/models"
+	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
 	db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
+	user_repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
 )
+
+var signUpHandler *SignUpHandler
+var loginHandler *LoginHandler
+var logoutHandler *LogoutHandler
+var authService *auth.AuthService
+var userRepo *user_repo.UserRepository
 
 type SignUpTestCase struct {
     Input handler_models.SignUpRequest
@@ -25,6 +33,13 @@ func TestMain(m *testing.M) {
     // Init DB
     test_db := testutil.InitTestDB()
     database.DB = test_db
+    // Setup handler
+    userRepo = user_repo.NewUserRepository(database.DB)
+    authService = auth.NewAuthService()
+    signUpHandler = NewSignUpHandler(userRepo, authService)
+    loginHandler = NewLoginHandler(userRepo, authService)
+    logoutHandler = NewLogoutHandler(userRepo, authService)
+
     // run tests
     exitCode := m.Run()
 
@@ -36,20 +51,24 @@ func TestMain(m *testing.M) {
 
 
 func TestSignUpHandler(t *testing.T) {
+    // Setup 
 
-
+    hashedPassword, err := authService.HashPassword("password")
+    if err != nil {
+        t.Fatal("Error returned from hashing password")
+    }
     // Define test cases
     cases := map[string]SignUpTestCase{
         "valid": {
             Input: handler_models.SignUpRequest{
                 Name:  "John",
                 Email: "john@doe.com",   
-                Password: "password",
+                Password: hashedPassword,
             },
             StatusCode: http.StatusOK, 
             Response: handler_models.SignUpResponse{
-                User: db_models.User{
-                    ID:    1,
+                User: &db_models.User{
+                    ID:    0,
                     Name:  "John Doe",
                     Email: "john@doe.com",
                 },
@@ -92,10 +111,19 @@ func TestSignUpHandler(t *testing.T) {
         ctx.Request = req
         
         // Act
-        SignUp(ctx)
-        if ctx.Errors != nil {
-            ctx.JSON(400, ctx.Errors)
-            ctx.Writer.WriteHeader(400)
+        user, token, err := signUpHandler.SignUp(tc.Input)
+        if err != nil {
+            apiErr, ok := err.(handler_models.ApiError)
+            if !ok {
+                ctx.JSON(http.StatusInternalServerError, "SignUp Handler - Internal Server error")
+            } else {
+                ctx.JSON(apiErr.Code, "Error from apiErr in Signup")
+            }
+        } else {
+            ctx.JSON(http.StatusOK, handler_models.SignUpResponse{
+                User: user,
+                Token: token, 
+            })
         } 
 
         // Assert
