@@ -1,28 +1,40 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"os"
 	"testing"
-	"time"
+
+	"gorm.io/gorm/logger"
+
+	"github.com/Brandon-G-Tripp/ai-language-teacher/env"
+	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 )
 
-func TestMain(t *testing.T) {
-    // Start web server
 
-    go func() {
-        main()
-    }() 
+func TestMain(m *testing.M) {
+    env.LoadEnv()
 
-    // Wait to start 
-    time.Sleep(1 * time.Second)
-
-    res, err := http.Get("http://localhost:8080")
-
+    db, err := database.ConnectDB("test")
     if err != nil {
-        t.Fatal(err)
+        log.Fatalf("Failed to connect to database: %v", err)
     } 
 
-    if res.StatusCode != 200 {
-        t.Fatalf("Expected status code 200, got %d", res.StatusCode)
+    // Enable logger for test
+    db.Logger.LogMode(logger.Info)
+
+    // Run Migrations 
+    err = database.Migrate("test")
+    if err != nil {
+        log.Fatalf("Error in test database migration: %v", err)
     } 
+
+    sqlDB, err := db.DB()
+
+    // Run tests
+    m.Run()
+
+    defer sqlDB.Close()
+
+    os.Exit(0)
 } 

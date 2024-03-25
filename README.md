@@ -32,6 +32,33 @@ This repository is for an AI-powered language learning chatbot and tool. The goa
 4. Start the API with `go run .`
 5. Connect to http://localhost:8080
 
+
+## Testing 
+
+```bash
+go test -cover ./... # test coverage for recursively
+
+go test -coverprofile=c.out # create a test coverage file
+go tool cover -func=c.out # print nice coverage report to console
+go test -v -short # run only unit tests
+go test -v -run ".Integration" ./... # if using name convention 
+
+
+
+
+```
+
+*note: without the -short flag all tests will run* 
+
+1. Please use format TestNameIntegration for integration tests with below code to skip for short
+```go
+if testing.Short() {
+    t.Skip("skipping integration test")
+} 
+```
+
+
+
 Contributions welcome!
 
 ## License
