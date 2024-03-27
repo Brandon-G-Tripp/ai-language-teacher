@@ -17,10 +17,14 @@ func Migrate(env string) error {
     if env == "test" {
         // Drop table if it exists (only in test env)
         db.Migrator().DropTable(&models.User{})
+        db.Migrator().DropTable(&models.Conversation{})
+        db.Migrator().DropTable(&models.Message{})
     } 
 
     // Create table (in all envs) 
     db.Migrator().CreateTable(&models.User{})
+    db.Migrator().CreateTable(&models.Conversation{})
+    db.Migrator().CreateTable(&models.Message{})
 
     return nil
 }
