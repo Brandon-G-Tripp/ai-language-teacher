@@ -28,7 +28,7 @@ func (r *ConversationRepository) GetById(id uint) (*models.Conversation, error) 
     var conversation models.Conversation
     err := r.db.First(&conversation, id).Error
     log.Printf("Conversation: %+v", conversation)
-    log.Printf("Error: %+v", error)
+    log.Printf("Error: %+v", err)
 
     if err == gorm.ErrRecordNotFound {
         log.Print("err is gorm not found")
