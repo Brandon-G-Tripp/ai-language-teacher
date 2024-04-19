@@ -24,13 +24,17 @@ func TestMain(m *testing.M) {
     // Init DB
     test_db := testutil.InitTestDB()
     database.DB = test_db
-    // Setup handler
+    
+    // Setup Repos 
     userRepo = gorm_repos.NewUserRepository(database.DB)
     conversationRepo = gorm_repos.NewConversationRepository(database.DB)
+
+    // Setup handler
     authService = auth.NewAuthService()
     signUpHandler = NewSignUpHandler(userRepo, authService)
     loginHandler = NewLoginHandler(userRepo, authService)
     logoutHandler = NewLogoutHandler(userRepo, authService)
+    conversationHandler =  NewConversationHandler(conversationRepo, authService)
 
     // run tests
     exitCode := m.Run()
