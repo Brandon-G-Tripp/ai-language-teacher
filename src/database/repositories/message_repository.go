@@ -9,7 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
-var ErrMessageNotFound = errors.New("message not found")
+var (
+    ErrMessageNotFound = errors.New("message not found")
+    ErrConversationNotFound = errors.New("conversation not found")
+)
 
 type MessageRepository struct {
     db *gorm.DB
@@ -42,16 +45,33 @@ func (r *MessageRepository) GetById(id uint) (*database_models.Message, error) {
 func (r *MessageRepository) GetByConversationId(conversationId uint) ([]*models.Message, error) {
     var messages []*models.Message
     err := r.db.Where("conversation_id = ?", conversationId).Find(&messages).Error
+
+    if err == gorm.ErrRecordNotFound {
+        return nil, ErrConversationNotFound
+    } 
+
     return messages, err
 }
 
 func (r *MessageRepository) Update(message *models.Message) error {
-    err := r.db.Save(message).Error
-    return err
+    result := r.db.Save(message)
+    if result.Error != nil {
+        return result.Error
+    } 
+    if result.RowsAffected == 0 {
+        return ErrMessageNotFound
+    } 
+    return nil
 } 
 
 
 func (r *MessageRepository) Delete(message *models.Message) error {
-    err := r.db.Delete(message).Error
-    return err
+    result := r.db.Delete(message)
+    if result.Error != nil {
+        return result.Error
+    }
+    if result.RowsAffected == 0 {
+        return ErrMessageNotFound
+    } 
+    return nil
 } 
