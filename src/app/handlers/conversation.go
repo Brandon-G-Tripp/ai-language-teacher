@@ -102,7 +102,7 @@ func (h *ConversationHandler) DeleteConversation(conversationID uint) (*db_model
 
     if err := h.ConversationRepo.Delete(conversation); err != nil {
         return nil, handler_models.ApiError{
-            Message: "Failed to update conversation",
+            Message: "Failed to delete conversation",
             Code: http.StatusInternalServerError, 
         }
     } 
