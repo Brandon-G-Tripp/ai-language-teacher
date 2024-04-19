@@ -1,11 +1,8 @@
 package repositories
 
 import (
-	"os"
 	"testing"
-	"log"
 
-	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
 ) 
 
