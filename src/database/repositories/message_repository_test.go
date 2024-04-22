@@ -38,7 +38,7 @@ func TestGetMessageById(t *testing.T) {
     repo.Create(message)
 
     // Act
-    fetchedMessage, err := repo.GetById(message.ID)
+    fetchedMessage, err := repo.GetByID(message.ID)
 
     // Assert
     if err != nil {
@@ -67,7 +67,7 @@ func TestUpdateMessage(t *testing.T) {
     if err != nil {
         t.Errorf("Error updating message: %v", err)
     }
-    fetchedMessage, _ := repo.GetById(message.ID)
+    fetchedMessage, _ := repo.GetByID(message.ID)
     if fetchedMessage.Content != "Updated Message" {
         t.Error("Message content not updated")
     }
@@ -90,7 +90,7 @@ func TestDeleteMessage(t *testing.T) {
     if err != nil {
         t.Errorf("Error deleting message: %v", err)
     }
-    _, err = repo.GetById(message.ID)
+    _, err = repo.GetByID(message.ID)
     if err == nil {
         t.Error("Message still exists after deletion")
     }

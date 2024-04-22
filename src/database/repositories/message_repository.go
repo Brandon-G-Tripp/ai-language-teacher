@@ -11,7 +11,6 @@ import (
 
 var (
     ErrMessageNotFound = errors.New("message not found")
-    ErrConversationNotFound = errors.New("conversation not found")
 )
 
 type MessageRepository struct {
@@ -28,7 +27,7 @@ func (r *MessageRepository) Create(message *database_models.Message) error {
     return r.db.Create(message).Error
 }
 
-func (r *MessageRepository) GetById(id uint) (*database_models.Message, error) {
+func (r *MessageRepository) GetByID(id uint) (*database_models.Message, error) {
     var message models.Message
     err := r.db.First(&message, id).Error
     log.Printf("Message: %+v", message)
