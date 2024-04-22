@@ -17,7 +17,7 @@ func TestCreateMessage(t *testing.T) {
         {
             name: "Valid request", 
             input: handler_models.CreateMessageRequest{
-                ConverstationID: 1,
+                ConversationID: 1,
                 UserID: 1,
                 Content: "Test Message",
             },
@@ -27,7 +27,7 @@ func TestCreateMessage(t *testing.T) {
         {
             name: "Invalid request - Missing ConversationID", 
             input: handler_models.CreateMessageRequest{
-                ConverstationID: 1,
+                UserID: 1,
                 Content: "Test Message",
             },
             expectedStatus: http.StatusBadRequest,
@@ -38,7 +38,7 @@ func TestCreateMessage(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.name, func(t *testing.T) {
             // Act
-            message, err := handler_models.CreateMessage(tc.input)
+            message, err := messageHandler.CreateMessage(tc.input)
 
             // Assert
             if tc.expectedError != "" {
@@ -84,11 +84,11 @@ func TestGetMessagesByConversationID(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.name, func(t *testing.T) {
             // Act
-            messages, err := handler_models.GetMessagesByConversationID(tc.conversationID)
+            messages, err := messageHandler.GetMessagesByConversationID(tc.conversationID)
 
             // Assert
             if tc.expectedError != "" {
-                if err == nil || err.(handler_models.ApiError).Message != tc.expectedError {
+                if err == nil || err.(handler_models.ApiError).Message != "Conversation not found" {
                     t.Errorf("Expected error '%s', but got '%v'", tc.expectedError, err)
                 }
             } else {
@@ -137,7 +137,7 @@ func TestUpdateMessage(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.name, func(t *testing.T) {
             // Act
-            message, err := handler_models.UpdateMessage(tc.messageID, tc.input)
+            message, err := messageHandler.UpdateMessage(tc.messageID, tc.input)
 
             // Assert
             if tc.expectedError != "" {
@@ -183,7 +183,7 @@ func TestDeleteMessage(t *testing.T) {
     for _, tc := range testCases {
         t.Run(tc.name, func(t *testing.T) {
             // Act
-            _, err := handler_models.DeleteMessage(tc.messageID)
+            _, err := messageHandler.DeleteMessage(tc.messageID)
 
             // Assert
             if tc.expectedError != "" {

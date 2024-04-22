@@ -5,7 +5,7 @@ import (
 )
 
 type CreateMessageRequest struct {
-    ConverstationID uint `json:"conversation_id"`
+    ConversationID uint `json:"conversation_id"`
     UserID uint `json:"user_id"`
     Content string `json:"content"`
 } 
