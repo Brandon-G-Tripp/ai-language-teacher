@@ -14,7 +14,10 @@ type MessageHandler struct {
     AuthService *auth.AuthService
 } 
 
-func NewMessageHandler(repo *message_repo.MessageRepository, authService *auth.AuthService) *MessageHandler {
+func NewMessageHandler(
+    repo *message_repo.MessageRepository,
+    authService *auth.AuthService,
+) *MessageHandler {
     return &MessageHandler{
         MessageRepo: repo,
         AuthService: authService,
@@ -54,7 +57,7 @@ func (h *MessageHandler) CreateMessage(req handler_models.CreateMessageRequest) 
     return message, nil
 }
 
-func (h *MessageHandler) GetMessagesByConversationID(conversationID uint) ([]db_models.Message, error) {
+func (h *MessageHandler) GetMessagesByConversationID(conversationID uint) ([]*db_models.Message, error) {
     messages, err := h.MessageRepo.GetByConversationID(conversationID)
     if err != nil {
         if err == message_repo.ErrConversationNotFound {
