@@ -15,9 +15,11 @@ var (
     loginHandler *LoginHandler
     logoutHandler *LogoutHandler
     conversationHandler *ConversationHandler
+    messageHandler *MessageHandler
     authService *auth.AuthService
     userRepo *gorm_repos.UserRepository
     conversationRepo *gorm_repos.ConversationRepository
+    messageRepo * gorm_repos.MessageRepository
 )
 
 func TestMain(m *testing.M) {
@@ -28,6 +30,7 @@ func TestMain(m *testing.M) {
     // Setup Repos 
     userRepo = gorm_repos.NewUserRepository(database.DB)
     conversationRepo = gorm_repos.NewConversationRepository(database.DB)
+    messageRepo = gorm_repos.NewMessageRepository(database.DB)
 
     // Setup handler
     authService = auth.NewAuthService()
@@ -35,6 +38,7 @@ func TestMain(m *testing.M) {
     loginHandler = NewLoginHandler(userRepo, authService)
     logoutHandler = NewLogoutHandler(userRepo, authService)
     conversationHandler =  NewConversationHandler(conversationRepo, authService)
+    messageHandler = NewMessageHandler(messageRepo, authService)
 
     // run tests
     exitCode := m.Run()
