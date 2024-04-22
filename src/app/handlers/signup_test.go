@@ -5,50 +5,19 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"os"
 	"testing"
 
 	"github.com/Brandon-G-Tripp/ai-language-teacher/internal/testutil"
-	"github.com/Brandon-G-Tripp/ai-language-teacher/src/database"
 
 	handler_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/app/models"
-	"github.com/Brandon-G-Tripp/ai-language-teacher/src/app/services/auth"
 	db_models "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/models"
-	user_repo "github.com/Brandon-G-Tripp/ai-language-teacher/src/database/repositories"
 )
-
-var signUpHandler *SignUpHandler
-var loginHandler *LoginHandler
-var logoutHandler *LogoutHandler
-var authService *auth.AuthService
-var userRepo *user_repo.UserRepository
 
 type SignUpTestCase struct {
     Input handler_models.SignUpRequest
     StatusCode int
     Response interface{} `json:"response"`
 } 
-
-func TestMain(m *testing.M) {
-    // Init DB
-    test_db := testutil.InitTestDB()
-    database.DB = test_db
-    // Setup handler
-    userRepo = user_repo.NewUserRepository(database.DB)
-    authService = auth.NewAuthService()
-    signUpHandler = NewSignUpHandler(userRepo, authService)
-    loginHandler = NewLoginHandler(userRepo, authService)
-    logoutHandler = NewLogoutHandler(userRepo, authService)
-
-    // run tests
-    exitCode := m.Run()
-
-    // Close connection 
-    testutil.CloseTestDB(database.DB)
-
-    os.Exit(exitCode)
-} 
-
 
 func TestSignUpHandler(t *testing.T) {
     // Setup 
