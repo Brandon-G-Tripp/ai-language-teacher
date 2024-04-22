@@ -36,21 +36,24 @@ func (r *MessageRepository) GetById(id uint) (*database_models.Message, error) {
 
     if err == gorm.ErrRecordNotFound {
         log.Print("err is gorm not found")
-        return &models.Message{}, ErrMessageNotFound
+        return nil, ErrMessageNotFound
     } 
 
     return &message, err
 } 
 
-func (r *MessageRepository) GetByConversationId(conversationId uint) ([]*models.Message, error) {
+func (r *MessageRepository) GetByConversationID(conversationId uint) ([]*models.Message, error) {
     var messages []*models.Message
-    err := r.db.Where("conversation_id = ?", conversationId).Find(&messages).Error
+    result := r.db.Where("conversation_id = ?", conversationId).Find(&messages)
+    if result.Error != nil {
+        return nil, result.Error
+    } 
 
-    if err == gorm.ErrRecordNotFound {
+    if result.RowsAffected == 0 {
         return nil, ErrConversationNotFound
     } 
 
-    return messages, err
+    return messages, nil
 }
 
 func (r *MessageRepository) Update(message *models.Message) error {

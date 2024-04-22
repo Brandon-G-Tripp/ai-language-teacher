@@ -32,7 +32,7 @@ func (r *ConversationRepository) GetById(id uint) (*models.Conversation, error) 
 
     if err == gorm.ErrRecordNotFound {
         log.Print("err is gorm not found")
-        return &models.Conversation{}, ErrConversationNotFound
+        return nil, ErrConversationNotFound
     } 
 
     return &conversation, err

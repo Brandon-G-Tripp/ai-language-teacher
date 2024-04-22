@@ -33,7 +33,7 @@ func (r *UserRepository) GetByEmail(email string) (*models.User, error) {
 
     if err == gorm.ErrRecordNotFound {
         log.Print("err is gorm not found")
-        return &models.User{}, ErrUserNotFound
+        return nil, ErrUserNotFound
     } 
 
     return  &user, err
